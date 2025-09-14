@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>IHK Berichtsheft Filler</title>
+    <link
+      rel="stylesheet"
+      href="popup.css"
+    />
+  </head>
+  <body>
+    <div class="sticky-header">
+      <span class="brand">IHK Filler</span>
+      <div class="header-actions">
+        <button
+          id="settingsBtn"
+          class="secondary"
+          title="Settings"
+          aria-label="Settings"
+        >
+          ⚙️
+        </button>
+        <button
+          id="helpBtn"
+          class="secondary"
+          title="Help"
+          aria-label="Help"
+        >
+          ❓
+        </button>
+      </div>
+    </div>
+    <main class="main">
+      <!-- Card selector and quick-create -->
+      <section class="card-section">
+        <div
+          class="card-row"
+          style="gap: 12px"
+        >
+          <label for="cardSelect">Card:</label>
+          <select
+            id="cardSelect"
+            aria-label="Select saved card"
+          >
+            <option value="">— Select card —</option>
+          </select>
+        </div>
+        <form id="cardForm">
+          <div class="card-field">
+            <label for="cardName">Name</label>
+            <input
+              id="cardName"
+              type="text"
+              placeholder="e.g. MorningShift"
+              required
+            />
+          </div>
+          <div class="card-field">
+            <label for="duration">Duration</label>
+            <input
+              id="duration"
+              type="time"
+              step="60"
+              placeholder="08:00"
+            />
+          </div>
+          <div class="card-field">
+            <label for="description">Description</label>
+            <textarea
+              id="description"
+              rows="2"
+              placeholder="Today I assisted with …"
+            ></textarea>
+          </div>
+          <div class="card-field">
+            <label>School Qualifications</label>
+            <div class="qualifications single-select">
+              <div
+                id="schoolSelectedTag"
+                class="tag"
+                style="display: none"
+              ></div>
+              <button
+                id="schoolDropdownBtn"
+                type="button"
+                class="dropdown-btn"
+                aria-expanded="false"
+              >
+                Select
+              </button>
+              <div
+                id="schoolDropdown"
+                class="dropdown"
+                hidden
+              ></div>
+            </div>
+          </div>
+          <div class="card-field">
+            <label>Company Qualifications</label>
+            <div class="qualifications single-select">
+              <div
+                id="companySelectedTag"
+                class="tag"
+                style="display: none"
+              ></div>
+              <button
+                id="companyDropdownBtn"
+                type="button"
+                class="dropdown-btn"
+                aria-expanded="false"
+              >
+                Select
+              </button>
+              <div
+                id="companyDropdown"
+                class="dropdown"
+                hidden
+              ></div>
+            </div>
+          </div>
+          <div class="card-actions">
+            <button
+              id="saveBtn"
+              type="submit"
+              class="primary"
+            >
+              Save
+            </button>
+            <button
+              id="deleteBtn"
+              type="button"
+              class="danger"
+            >
+              Delete
+            </button>
+          </div>
+        </form>
+      </section>
+
+      <!-- Entries mapping section -->
+      <section
+        class="entries-section"
+        id="mappingSection"
+        hidden
+      >
+        <div class="entries-header">
+          Open Report Entries
+          <span
+            id="entriesCount"
+            class="muted"
+            style="margin-left: 8px"
+          ></span>
+          <button
+            id="refreshEntriesBtn"
+            class="secondary"
+            type="button"
+            style="float: right"
+          >
+            Refresh
+          </button>
+        </div>
+        <div id="entriesContainer"></div>
+      </section>
+      <p
+        id="noEntriesNote"
+        class="muted"
+        hidden
+      >
+        No open report entries detected on this page. Expand or create an entry,
+        then click Refresh.
+      </p>
+
+      <!-- Advanced tools (collapsible) -->
+      <section class="advanced-section">
+        <div
+          class="advanced-toggle"
+          tabindex="0"
+          role="button"
+          aria-expanded="false"
+          id="advancedToggle"
+        >
+          <span>▼</span> Advanced Tools
+        </div>
+        <div
+          id="advancedContent"
+          hidden
+        >
+          <button
+            id="highlightBtn"
+            class="secondary"
+            type="button"
+          >
+            Highlight detected fields
+          </button>
+          <button
+            id="copyScanBtn"
+            class="secondary"
+            type="button"
+          >
+            Copy scan report (JSON)
+          </button>
+          <pre
+            id="debugOutput"
+            class="debug-output"
+            aria-live="polite"
+          ></pre>
+        </div>
+      </section>
+    </main>
+    <div class="sticky-footer">
+      <button
+        id="applyAllBtn"
+        class="primary"
+        type="button"
+        style="width: 100%"
+      >
+        Apply to All
+      </button>
+    </div>
+    <div
+      id="toast"
+      class="toast"
+      role="status"
+      aria-live="polite"
+      hidden
+    ></div>
+    <script src="popup.js"></script>
+  </body>
+</html>
