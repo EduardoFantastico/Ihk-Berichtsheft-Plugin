@@ -1,5 +1,5 @@
 // contentScript.js
-// Runs on bildung.ihk.de pages. Scans open report-entry fields, observes lazy loads, and applies mappings.
+// Runs on meineihk.service.ihk.de pages. Scans open report-entry fields, observes lazy loads, and applies mappings.
 
 (function () {
   function dispatchAllEvents(element) {
@@ -186,6 +186,8 @@
 
   function selectQualifications(labels) {
     const wanted = Array.from(labels || []).map(normalizeText);
+    console.log("🔍 Looking for qualifications:", wanted);
+    
     // Prefer Angular CDK overlay content when present
     const overlayRoot =
       document.querySelector(".cdk-overlay-container") || document.body;
@@ -194,29 +196,40 @@
         overlayRoot,
         '[role="dialog"], .mat-mdc-dialog-container, .cdk-overlay-pane'
       )[0] || overlayRoot;
-    const candidates = queryAllDeep(
-      dialog,
-      "label, li, button, span, mat-option, mat-checkbox, mat-list-item"
-    );
-    const byText = (el) => normalizeText(el.textContent || "");
-    for (const w of wanted) {
-      let matched = false;
-      for (const el of candidates) {
-        if (byText(el).includes(w)) {
-          el.click();
-          matched = true;
+    
+    // Find all mat-checkbox elements in the dialog
+    const checkboxes = queryAllDeep(dialog, "mat-checkbox");
+    console.log("📋 Found checkboxes:", checkboxes.length);
+    
+    for (const wantedLabel of wanted) {
+      console.log("🎯 Looking for:", wantedLabel);
+      let found = false;
+      
+      for (const checkbox of checkboxes) {
+        // Get the label text from the mat-checkbox
+        const labelElement = checkbox.querySelector('label.mdc-label');
+        const labelText = labelElement ? normalizeText(labelElement.textContent || "") : "";
+        
+        console.log("📝 Checkbox label:", labelText);
+        
+        // Check if this checkbox matches our wanted label
+        if (labelText.includes(wantedLabel)) {
+          console.log("✅ Match found! Clicking checkbox for:", labelText);
+          // Find the actual input element and click it
+          const input = checkbox.querySelector('input[type="checkbox"]');
+          if (input && !input.checked) {
+            input.click();
+            // Also trigger change event for Angular
+            input.dispatchEvent(new Event('change', { bubbles: true }));
+            input.dispatchEvent(new Event('input', { bubbles: true }));
+            found = true;
+          }
           break;
         }
       }
-      if (!matched) {
-        for (const el of candidates) {
-          const input = el.querySelector?.('input[type="checkbox"]');
-          if (input && byText(el).includes(w)) {
-            if (!input.checked) input.click();
-            matched = true;
-            break;
-          }
-        }
+      
+      if (!found) {
+        console.log("❌ No match found for:", wantedLabel);
       }
     }
   }
@@ -266,17 +279,29 @@
   }
 
   async function applyMapping(assignments, cardsByName) {
+    console.log("🚀 applyMapping called with:", { assignments, cardsByName });
     buildCache();
     for (const [entryId, config] of Object.entries(assignments || {})) {
+      console.log("📝 Processing entry:", entryId, config);
       const entry = entryCache.get(entryId);
-      if (!entry) continue;
+      if (!entry) {
+        console.log("❌ Entry not found:", entryId);
+        continue;
+      }
       const card = cardsByName[config.cardName];
-      if (!card) continue;
+      if (!card) {
+        console.log("❌ Card not found:", config.cardName);
+        continue;
+      }
+      console.log("🎴 Card found:", card);
+      
       const quals = new Set([
         ...(card.schoolQualifications || []),
         ...(card.companyQualifications || []),
         ...(card.qualifications || []),
       ]);
+      console.log("🎯 Final qualifications:", Array.from(quals));
+      
       const duration = config.duration || card.duration || card.workTime || "";
       scrollIntoViewIfNeeded(entry.node);
       openQualificationDialog(entry);

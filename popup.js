@@ -222,7 +222,7 @@ const COMPANY_QUALIFICATIONS = [
   "Sonstige Qualifikationen",
   "Umsetzen, Integrieren und Prüfen von Maßnahmen zur IT-Sicherheit und zum Datenschutz",
   "Umweltschutz",
-  "Vernetztes Zusammenarbeiten unter Nutzung digitaler Medien",
+  "Vernetztes Zusammenarbeiten unter Nutzung digitaler Medien"
 ];
 
 const els = {
@@ -286,12 +286,8 @@ function getFormCard() {
     texts: {
       description: els.description.value || "",
     },
-    schoolQualifications: getSelectedQualificationsFromTags(
-      els.schoolSelectedTag
-    ),
-    companyQualifications: getSelectedQualificationsFromTags(
-      els.companySelectedTag
-    ),
+    schoolQualifications: getSelectedQualificationsFromTags(els.schoolSelectedTag),
+    companyQualifications: getSelectedQualificationsFromTags(els.companySelectedTag),
   };
   return card;
 }
@@ -353,9 +349,19 @@ function renderQualificationDropdown(container, list) {
 }
 
 function getSelectedQualificationsFromTags(tagContainer) {
-  return Array.from(tagContainer.querySelectorAll("[data-qual]")).map((t) =>
+  // For single-select dropdowns, check if there's a selected tag
+  if (tagContainer.style.display !== "none" && tagContainer.innerHTML.trim() !== "") {
+    // Extract the qualification name from the tag (remove the remove button)
+    const tagText = tagContainer.textContent || "";
+    const qualName = tagText.replace(/🗑️.*$/, "").trim();
+    return qualName ? [qualName] : [];
+  }
+  
+  // Fallback for multi-select (legacy)
+  const quals = Array.from(tagContainer.querySelectorAll("[data-qual]")).map((t) =>
     t.getAttribute("data-qual")
   );
+  return quals;
 }
 
 function setSelectedQualifications(dropdown, tagContainer, quals) {

@@ -3,7 +3,7 @@
 =======
 # IHK Berichtsheft Filler (MV3)
 
-Chrome Extension to create Cards and automatically apply qualifications and duration to open Berichtsheft entries on `bildung.ihk.de`.
+Chrome Extension to create Cards and automatically apply qualifications and duration to open Berichtsheft entries on `meineihk.service.ihk.de`.
 
 ## Install (Developer Mode)
 1. Open Chrome → `chrome://extensions`
@@ -20,7 +20,7 @@ Chrome Extension to create Cards and automatically apply qualifications and dura
 - Cards are saved in `chrome.storage.local` keyed by Card Name.
 
 ## Detect open report entries
-- Navigate to your daily entries page on `https://bildung.ihk.de/...`
+- Navigate to your daily entries page on `https://meineihk.service.ihk.de/...`
 - Scroll a bit so entries render
 - Open the popup and click "Refresh"
 - If open text fields are found, a list appears under "Open Report Entries":

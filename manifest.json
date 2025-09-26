@@ -1,8 +1,8 @@
 {
   "manifest_version": 3,
   "name": "IHK Berichtsheft Filler",
-  "version": "1.2.0",
-  "description": "Create, manage, and apply cards to auto-fill the digital Berichtsheft on bildung.ihk.de.",
+  "version": "1.3.0",
+  "description": "Create, manage, and apply cards to auto-fill the digital Berichtsheft on meineihk.service.ihk.de.",
   "action": {
     "default_title": "IHK Berichtsheft Filler",
     "default_popup": "popup.html"
@@ -14,7 +14,8 @@
   ],
   "host_permissions": [
     "https://bildung.ihk.de/*",
-    "https://digbe.services.ihk.de/*"
+    "https://digbe.services.ihk.de/*",
+    "https://meineihk.service.ihk.de/*"
   ],
   "background": {
     "service_worker": "background.js"
@@ -23,7 +24,8 @@
     {
       "matches": [
         "https://bildung.ihk.de/*",
-        "https://digbe.services.ihk.de/*"
+        "https://digbe.services.ihk.de/*",
+        "https://meineihk.service.ihk.de/*"
       ],
       "js": ["contentScript.js"],
       "run_at": "document_idle",
